@@ -97,4 +97,17 @@
             </div>
         </div>
     </div>
+    @auth
+    @if(Auth::user()->is_admin)
+        <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+            Admin Dashboard
+        </a>
+    @endif
+@endauth
+
 </nav>
+<a href="{{ route('checkout.index') }}" class="hover:text-green-400">Commander</a>
+<a href="{{ route('cart.index') }}" class="hover:text-green-400">Panier</a>
+<a href="{{ route('products.index') }}" class="hover:text-green-400">Produits</a>
+<a href="{{ route('dashboard') }}" class="hover:text-green-400">Tableau de bord</a>
+<a href="{{ route('profile.edit') }}" class="hover:text-green-400">Profil</a>
