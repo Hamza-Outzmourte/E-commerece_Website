@@ -19,7 +19,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ $product->name }}</h1>
 
-                <p class="text-gray-600 mb-2"><strong>Catégorie :</strong> {{ $product->category->name ?? 'Non défini' }}</p>
+                <p class="text-gray-600 mb-2"><strong>Catégorie :</strong> {{ $product->category ?? 'Non défini' }}</p>
 
                 <p class="text-xl text-green-600 font-semibold mb-4">{{ number_format($product->price, 2) }} Dh</p>
 
