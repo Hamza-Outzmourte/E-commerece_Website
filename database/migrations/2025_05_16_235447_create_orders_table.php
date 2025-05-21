@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->decimal('total', 10, 2);
-            $table->string('status')->default('pending');
-            $table->timestamps();
-        });
+        $table->id();
+        $table->string('name');
+        $table->string('phone');
+        $table->text('address');
+        $table->string('payment_method')->default('cash_on_delivery');
+        $table->string('status')->default('pending');
+        $table->timestamps();
+    });
     }
 
 

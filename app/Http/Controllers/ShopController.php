@@ -20,4 +20,5 @@ class ShopController extends Controller
         $product = Product::findOrFail($id);
         return view('shop.show', compact('product'));
     }
+    
 }

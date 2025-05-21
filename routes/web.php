@@ -3,6 +3,8 @@
 use App\Http\Controllers\PageDefaultController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\SearchController;
@@ -103,7 +105,28 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 });
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', function () {
+        return view('profile.edit', [
+            'user' => auth()->user(),
+        ]);
+    })->name('profile.edit');
+});
+Route::middleware(['auth'])->group(function () {
+    Route::put('/user/password', [UserPasswordController::class, 'update'])->name('user-password.update');
+});
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/search', [ProductController::class, 'search'])->name('search');
+Route::get('/checkout/thankyou', [CheckoutController::class, 'thankyou'])->name('orders.thankyou');
+use App\Http\Controllers\NotificationController;
 
 
+Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+});
 
 

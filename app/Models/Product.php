@@ -32,5 +32,24 @@ public function brand()
 {
     return $this->belongsTo(Brand::class);
 }
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
+
+public function averageRating()
+{
+    return $this->reviews()->avg('rating');
+}
+
+public function reviewsCount()
+{
+    return $this->reviews()->count();
+}
+public function images()
+{
+    return $this->hasMany(ProductImage::class);
+}
+
 
 }

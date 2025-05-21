@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -8,19 +7,29 @@ use App\Models\Order;
 
 class DashboardController extends Controller
 {
+    public function index()
+    {
+        $user = auth()->user();
 
-public function index()
+        // Récupère le nombre total de produits et commandes de cet utilisateur
+        $productCount = Product::where('id', $user->id)->count();
+        $orderCount = Order::count();
+
+        return view('dashboard', compact('user', 'productCount', 'orderCount'));
+    }
+    public function dashboard()
 {
     $user = auth()->user();
 
-    $productCount = Product::count(); // ou Product::where('user_id', $user->id)->count();
-    $orderCount = Order::where('user_id', $user->id)->count();
+    // Nombre de commandes (adapté à ta relation)
+    $orderCount = Order::count();
+    $notificationsCount = 0;
 
-    return view('dashboard', [
-        'user' => $user,
-        'productCount' => $productCount,
-        'orderCount' => $orderCount,
-    ]);
+    // Nombre de notifications non lues (Laravel Notifications)
+    // $notificationsCount = $user->unreadNotifications()->count();
+
+    return view('dashboard', compact('user', 'orderCount', 'notificationsCount'));
 }
 
 }
+
