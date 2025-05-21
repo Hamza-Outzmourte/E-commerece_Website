@@ -212,7 +212,7 @@
           <li><a href="#" class="hover:underline">Qui sommes-nous</a></li>
           <li><a href="#" class="hover:underline">Conditions générales</a></li>
           <li><a href="#" class="hover:underline">Politique de Confidentialité</a></li>
-          <li><a href="#" class="hover:underline">Contactez-nous</a></li>
+          <li><a href="{{ route('contact.show') }}" class="hover:underline">Contactez-nous</a></li>
         </ul>
       </div>
 
