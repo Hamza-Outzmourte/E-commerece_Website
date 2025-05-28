@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin</title>
+  <title>Tableau de bord</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -28,7 +28,7 @@
     <main class="flex-1 p-6">
       <!-- Topbar -->
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-blue-700">Dashboard</h1>
+        <h1 class="text-2xl font-bold text-blue-700">Tableau de bord</h1>
         <div class="flex items-center space-x-4">
           <button class="bg-white p-2 rounded-full shadow"><span class="material-icons">notifications</span></button>
           <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full" alt="User">
@@ -38,20 +38,16 @@
       <!-- Stat Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="bg-white p-6 rounded-xl shadow text-center">
-          <p class="text-sm text-gray-500">Sales</p>
-          <p class="text-2xl font-bold text-blue-600">3500</p>
+          <p class="text-sm text-gray-500">Utilisateurs</p>
+          <p class="text-2xl font-bold text-blue-600">{{ $userCount }}</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow text-center">
-          <p class="text-sm text-gray-500">Orders</p>
-          <p class="text-2xl font-bold text-blue-600">2900</p>
+          <p class="text-sm text-gray-500">Produits</p>
+          <p class="text-2xl font-bold text-blue-600">{{ $productCount }}</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow text-center">
-          <p class="text-sm text-gray-500">Invoices</p>
-          <p class="text-2xl font-bold text-blue-600">6500</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow text-center">
-          <p class="text-sm text-gray-500">Alerts</p>
-          <p class="text-2xl font-bold text-blue-600">7200</p>
+          <p class="text-sm text-gray-500">Commandes</p>
+          <p class="text-2xl font-bold text-blue-600">{{ $orderCount }}</p>
         </div>
       </div>
 
@@ -86,4 +82,4 @@
     });
   </script>
 </body>
-</html
+</html>

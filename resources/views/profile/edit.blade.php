@@ -2,30 +2,30 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto px-4 py-10">
-    <h2 class="text-2xl font-semibold mb-6">Mon profil</h2>
+    <h2 class="text-white text-2xl font-semibold mb-6">Mon profil</h2>
 
     {{-- Informations personnelles --}}
     <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
-        <h3 class="text-lg font-medium mb-4">Informations personnelles</h3>
+        <h3 class="text-white text-lg font-medium mb-4">Informations personnelles</h3>
         <form method="POST" action="{{ route('profile.update') }}">
             @csrf
             @method('PATCH')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label for="name" class="block text-sm font-medium">Nom complet</label>
+                    <label for="name" class="text-white block text-sm font-medium">Nom complet</label>
                     <input type="text" name="name" id="name" value="{{ old('name', auth()->user()->name) }}"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
                 </div>
 
                 <div>
-                    <label for="email" class="block text-sm font-medium">Adresse email</label>
+                    <label for="email" class="text-white block text-sm font-medium">Adresse email</label>
                     <input type="email" name="email" id="email" value="{{ old('email', auth()->user()->email) }}"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
                 </div>
 
                 <div>
-                    <label for="phone" class="block text-sm font-medium">Téléphone</label>
+                    <label for="phone" class="text-white block text-sm font-medium">Téléphone</label>
                     <input type="text" name="phone" id="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
                 </div>
@@ -38,26 +38,26 @@
 
     {{-- Changer le mot de passe --}}
     <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
-        <h3 class="text-lg font-medium mb-4">Changer le mot de passe</h3>
+        <h3 class="text-white text-lg font-medium mb-4">Changer le mot de passe</h3>
         <form method="POST" action="{{ route('user-password.update') }}">
             @csrf
             @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label for="current_password" class="block text-sm font-medium">Mot de passe actuel</label>
+                    <label for="current_password" class="text-white block text-sm font-medium">Mot de passe actuel</label>
                     <input type="password" name="current_password" id="current_password"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium">Nouveau mot de passe</label>
+                    <label for="password" class="text-white block text-sm font-medium">Nouveau mot de passe</label>
                     <input type="password" name="password" id="password"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
                 </div>
 
                 <div>
-                    <label for="password_confirmation" class="block text-sm font-medium">Confirmer mot de passe</label>
+                    <label for="password_confirmation" class="text-white block text-sm font-medium">Confirmer mot de passe</label>
                     <input type="password" name="password_confirmation" id="password_confirmation"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
                 </div>

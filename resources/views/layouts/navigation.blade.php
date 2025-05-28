@@ -98,12 +98,10 @@
         </div>
     </div>
     @auth
-    @if(Auth::user()->is_admin)
-        <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
-            Admin Dashboard
-        </a>
-    @endif
-@endauth
+        @if(Auth::user()->is_admin)
+            <a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-md text-sm font-medium">Admin Dashboard</a>
+        @endif
+    @endauth
 
 </nav>
 <a href="{{ route('checkout.index') }}" class="hover:text-green-400">Commander</a>

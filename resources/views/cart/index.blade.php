@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-semibold mb-6">Panier</h1>
+    <h1 class="text-white text-3xl font-semibold mb-6">Panier</h1>
 
     @if(session('success'))
         <div class="mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded">

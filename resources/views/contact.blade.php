@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-xl mx-auto py-10">
-    <h1 class="text-2xl font-bold mb-4">Contactez-nous</h1>
+    <h1 class="text-white text-2xl font-bold mb-4">Contactez-nous</h1>
 
     <div class="mb-6 bg-white p-4 rounded shadow">
         <p><strong>À propos du site :</strong> E-Shop, votre boutique en ligne de confiance.</p>

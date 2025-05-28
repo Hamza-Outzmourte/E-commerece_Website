@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">Mes commandes</h1>
+    <h1 class="text-white text-2xl font-bold mb-6">Mes commandes</h1>
 
     @if($orders->isEmpty())
         <div class="text-gray-600">Vous n'avez passé aucune commande pour l’instant.</div>
