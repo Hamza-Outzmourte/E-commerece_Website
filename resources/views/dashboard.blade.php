@@ -1,87 +1,174 @@
-@extends('layouts.app')
-
-@section('header')
-Tableau de bord
-@endsection
+@extends('layouts.app') {{-- Si tu utilises un layout de base --}}
 
 @section('content')
-<div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg space-y-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8">Bonjour, {{ $user->name }}</h1>
 
-  <!-- Message de bienvenue -->
-  <div class="text-center md:text-left">
-    <h1 class="text-3xl font-extrabold mb-2 text-gray-800 dark:text-white">Bienvenue, {{ $user->name }} 👋</h1>
-    <p class="text-gray-600 dark:text-gray-400">Voici un aperçu de votre activité récente.</p>
-  </div>
+    {{-- Résumé rapide --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500 dark:text-gray-400">Commandes</span>
+                <i class="fas fa-shopping-bag text-indigo-600 text-xl"></i>
+            </div>
+            <p class="text-2xl font-semibold text-gray-800 dark:text-white mt-2">{{ $orderCount }}</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500 dark:text-gray-400">Notifications</span>
+                <i class="fas fa-bell text-yellow-500 text-xl"></i>
+            </div>
+            <p class="text-2xl font-semibold mt-2 text-gray-800 dark:text-white">{{ $unreadNotificationsCount }}</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500 dark:text-gray-400">Points</span>
+                <i class="fas fa-coins text-green-500 text-xl"></i>
+            </div>
+            <p class="text-2xl font-semibold mt-2 text-gray-800 dark:text-white">{{ $points }}</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500 dark:text-gray-400">Total Dépensé</span>
+                <span class="text-pink-500 font-semibold text-sm">DH</span>
 
-  <!-- Statistiques en grille -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <!-- Commandes -->
-    <div class="p-6 bg-blue-50 dark:bg-blue-800/30 rounded-xl shadow hover:shadow-md transition duration-300 border border-blue-100 dark:border-blue-700">
-      <h2 class="text-lg font-semibold mb-2 text-blue-700 dark:text-blue-300">Vos commandes</h2>
-      <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ $orderCount }}</p>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">commandes en cours</p>
-      <a href="{{ route('orders.index') }}" class="mt-3 inline-block text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">Voir mes commandes →</a>
+            </div>
+            <p class="text-2xl font-semibold mt-2 text-gray-800 dark:text-white">{{ number_format($totalSpent, 2) }} DH</p>
+        </div>
     </div>
 
-    <!-- Notifications -->
-    <div class="p-6 bg-green-50 dark:bg-green-800/30 rounded-xl shadow hover:shadow-md transition duration-300 border border-green-100 dark:border-green-700">
-      <h2 class="text-lg font-semibold mb-2 text-green-700 dark:text-green-300">Notifications</h2>
-      @if(auth()->user()->notifications->count())
-        <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ auth()->user()->unreadNotifications->count() }}</p>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">non lues</p>
-        <a href="{{ route('notifications.index') }}" class="mt-3 inline-block text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium">Voir mes notifications →</a>
-      @else
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Aucune notification non lue.</p>
-        <a href="{{ route('notifications.index') }}" class="mt-3 inline-block text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium">Consulter toutes les notifications →</a>
-      @endif
+    {{-- Commandes récentes --}}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Commandes récentes</h2>
+        @if($recentOrders->isEmpty())
+            <p class="text-gray-500">Aucune commande pour le moment.</p>
+        @else
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                @foreach($recentOrders as $order)
+                    <li class="py-3 flex justify-between">
+                        <span>#{{ $order->id }} - {{ $order->created_at->format('d/m/Y') }}</span>
+                        <span class="text-sm text-white px-2 py-1 rounded bg-{{ $order->status === 'completed' ? 'green' : 'yellow' }}-500">
+                            {{ ucfirst($order->status) }}
+                        </span>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
     </div>
 
-    <!-- Profil -->
-    <div class="p-6 bg-yellow-50 dark:bg-yellow-800/30 rounded-xl shadow hover:shadow-md transition duration-300 border border-yellow-100 dark:border-yellow-700">
-      <h2 class="text-lg font-semibold mb-2 text-yellow-700 dark:text-yellow-300">Profil</h2>
-      <p class="text-gray-800 dark:text-gray-200">Nom : <strong>{{ $user->name }}</strong></p>
-      <p class="text-gray-800 dark:text-gray-200">Email : <strong>{{ $user->email }}</strong></p>
-      <a href="{{ route('profile.edit') }}" class="mt-3 inline-block text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 font-medium">Modifier mes informations →</a>
+    {{-- Produits recommandés --}}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Produits recommandés</h2>
+        @if($recommendedProducts->isEmpty())
+            <p class="text-gray-500">Aucune recommandation pour le moment.</p>
+        @else
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                @foreach($recommendedProducts as $product)
+                    <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded shadow-sm">
+                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-28 object-cover rounded">
+                        <h3 class="text-sm font-medium mt-2 text-gray-700 dark:text-white">{{ $product->name }}</h3>
+                        <p class="text-sm text-gray-500">{{ number_format($product->price, 2) }} €</p>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
-  </div>
 
-  <!-- Section boutique -->
-  <div class="p-6 bg-purple-50 dark:bg-purple-900/30 rounded-xl shadow hover:shadow-lg transition duration-300 border border-purple-100 dark:border-purple-700">
-    <h2 class="text-xl font-semibold mb-3 text-purple-700 dark:text-purple-300">Découvrez la boutique</h2>
-    <p class="mb-4 text-gray-700 dark:text-gray-300">Parcourez les derniers produits et profitez des meilleures offres.</p>
-    <a href="{{ route('shop.index') }}" class="inline-flex items-center px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
-      Voir la boutique
-      <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-      </svg>
-    </a>
-  </div>
+    {{-- Statistiques perso --}}
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+        {{-- Produits les plus achetés --}}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Produits les plus achetés</h2>
+            @if($topProducts->isEmpty())
+                <p class="text-gray-500">Aucun produit acheté.</p>
+            @else
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach($topProducts as $item)
+                        <li class="py-2 flex justify-between">
+                            <span>{{ $item->product->name ?? 'Produit supprimé' }}</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-300">x{{ $item->count }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
 
-  <!-- Recommandations -->
-  <div class="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl shadow hover:shadow-md transition duration-300 border border-gray-100 dark:border-gray-700">
-    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Recommandations</h2>
-    <ul class="space-y-3 text-gray-700 dark:text-gray-300">
-      <li class="flex items-start">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-        </svg>
-        Produit A - Super performance pour le gaming
-      </li>
-      <li class="flex items-start">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-        </svg>
-        Produit B - Idéal pour la productivité
-      </li>
-      <li class="flex items-start">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-        </svg>
-        Produit C - Offre spéciale cette semaine
-      </li>
-    </ul>
-  </div>
+        {{-- Produits récemment vus --}}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Produits récemment consultés</h2>
+            @if($recentViewedProducts->isEmpty())
+                <p class="text-gray-500">Aucune consultation récente.</p>
+            @else
+                <div class="grid grid-cols-3 gap-3">
+                    @foreach($recentViewedProducts as $product)
+                        <div class="text-center">
+                            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="h-16 w-full object-cover rounded mb-1">
+                            <p class="text-xs text-gray-700 dark:text-gray-200">{{ $product->name }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
 
+    {{-- Wishlist --}}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Ma wishlist</h2>
+        @if($wishlist->isEmpty())
+            <p class="text-gray-500">Votre liste de souhaits est vide.</p>
+        @else
+            <div class="flex flex-wrap gap-4">
+                @foreach($wishlist as $item)
+                    <div class="w-32 text-center">
+                        <img
+        src="{{ asset('storage/' . $item->product->image) }}"
+        alt="{{ $item->product->name }}"
+        class="w-full h-full object-cover rounded"
+      >
+                        <p class="text-sm mt-1 text-gray-700 dark:text-gray-200">{{ $item->product->name }}</p>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+    {{-- Support Tickets & Retours --}}
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Mes tickets support</h2>
+            @forelse($supportTickets as $ticket)
+                <div class="mb-2">
+                    <p class="text-sm text-gray-700 dark:text-gray-200 font-medium">#{{ $ticket->id }} - {{ $ticket->subject }}</p>
+                    <p class="text-xs text-gray-500">{{ $ticket->created_at->format('d/m/Y') }}</p>
+                </div>
+            @empty
+                <p class="text-gray-500">Aucun ticket ouvert.</p>
+            @endforelse
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Demandes de retour</h2>
+            @forelse($returnRequests as $retour)
+                <p class="text-sm text-gray-700 dark:text-gray-200 mb-2">
+                    Retour #{{ $retour->id }} - {{ ucfirst($retour->status) }}
+                </p>
+            @empty
+                <p class="text-gray-500">Aucune demande en cours.</p>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- Avis --}}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Mes derniers avis</h2>
+        @forelse($reviews as $review)
+            <div class="mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">
+                <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ $review->product->name ?? 'Produit supprimé' }}</p>
+                <p class="text-sm text-gray-500 italic">"{{ $review->comment }}"</p>
+            </div>
+        @empty
+            <p class="text-gray-500">Aucun avis publié.</p>
+        @endforelse
+    </div>
 </div>
 @endsection

@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('support_tickets', function (Blueprint $table) {
     $table->id();
     $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->foreignId('product_id')->constrained()->onDelete('cascade');
-    $table->tinyInteger('rating'); // note de 1 à 5
-    $table->text('comment')->nullable();
+    $table->string('subject');
+    $table->text('description');
+    $table->enum('status', ['open', 'in_progress', 'closed'])->default('open');
+    $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
     $table->timestamps();
 });
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('support_tickets');
     }
 };

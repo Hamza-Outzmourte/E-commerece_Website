@@ -21,7 +21,12 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'image', // si tu ajoutes une image plus tard
+        'image',
+        'category',
+        'brand',
+        'type' // 'type' est un champ optionnel, tu peux l'enlever si tu n'en as pas besoin
+
+        // si tu ajoutes une image plus tard
     ];
     public function category()
 {
@@ -32,15 +37,9 @@ public function brand()
 {
     return $this->belongsTo(Brand::class);
 }
-public function reviews()
-{
-    return $this->hasMany(Review::class);
-}
 
-public function averageRating()
-{
-    return $this->reviews()->avg('rating');
-}
+
+
 
 public function reviewsCount()
 {
@@ -50,6 +49,19 @@ public function images()
 {
     return $this->hasMany(ProductImage::class);
 }
+// app/Models/Product.php
 
+public function stock()
+{
+    return $this->hasOne(Stock::class);
+}
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
 
+public function averageRating()
+{
+    return $this->reviews()->avg('rating') ?? 0;
+}
 }

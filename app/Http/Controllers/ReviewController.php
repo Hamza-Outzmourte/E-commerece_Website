@@ -1,30 +1,42 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Product;
 use App\Models\Review;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    public function store(Request $request)
+
+public function store(Request $request, Product $product)
 {
-    // Valider les données du formulaire
     $request->validate([
-        'product_id' => 'required|exists:products,id',
         'rating' => 'required|integer|min:1|max:5',
-        'comment' => 'nullable|string',
+        'comment' => 'nullable|string|max:1000',
     ]);
 
-    // Enregistrer l'avis dans la base de données
-    Review::create([
-        'user_id' => auth()->id(), // l'utilisateur connecté
-        'product_id' => $request->product_id,
+    $review = $product->reviews()->create([
+        'user_id' => auth()->id(),
         'rating' => $request->rating,
         'comment' => $request->comment,
     ]);
 
-    // Rediriger avec un message de succès
-    return redirect()->back()->with('success', 'Merci pour votre avis !');
+    // Debug temporaire
+    dd($review);
+
+    return redirect()->route('shop.show', $product->id)->with('success', 'Votre avis a été ajouté.');
 }
+
+public function create(Product $product)
+{
+    return view('reviews.create', compact('product'));
+}
+public function show(Product $product)
+{
+    $product->load('reviews');
+
+    return view('shop.show', compact('product'));
+}
+
 }

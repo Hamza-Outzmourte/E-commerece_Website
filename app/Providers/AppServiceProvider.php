@@ -3,9 +3,17 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use App\Models\Stock;
+use App\Observers\StockObserver;
 class AppServiceProvider extends ServiceProvider
 {
+
+
+public function boot()
+{
+    Stock::observe(StockObserver::class);
+}
+
     /**
      * Register any application services.
      */
@@ -17,8 +25,5 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        //
-    }
+
 }

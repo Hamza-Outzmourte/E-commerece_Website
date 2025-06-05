@@ -6,11 +6,36 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::all();
-        return view('admin.users.index', compact('users'));
+    
+
+public function index(Request $request)
+{
+    $query = User::query();
+
+    // 🔍 Recherche par nom ou email
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%')
+              ->orWhere('email', 'like', '%' . $request->search . '%');
+        });
     }
+
+    // 🧰 Filtre par rôle
+    if ($request->filled('role')) {
+        $query->where('role', $request->role);
+    }
+
+    // 🧰 Filtre par statut
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // 🔃 Tri et pagination
+    $users = $query->latest()->paginate(10);
+
+    return view('admin.users.index', compact('users'));
+}
+
 
     public function create()
     {

@@ -6,8 +6,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'EveresTech') }}</title>
     <!-- Swiper CSS -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <link
@@ -30,24 +34,28 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 <header class="bg-white dark:bg-gray-900 shadow-md fixed w-full z-50 transition duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
     <!-- Logo -->
     <a href="{{ url('/') }}" class="flex items-center space-x-2 group">
-      <img src="{{ asset('images/22.png') }}" alt="Logo" class="h-10 w-auto group-hover:scale-105 transition-transform duration-300">
-      <span class="text-lg font-semibold text-gray-800 dark:text-white hidden sm:inline group-hover:text-indigo-600">Ma Boutique</span>
+      <img src="{{ asset('images/4.png') }}" alt="Logo" class="h-10 w-auto group-hover:scale-105 transition-transform duration-300">
     </a>
 
     <!-- Search Bar -->
-    <form action="{{ route('search') }}" method="GET" class="hidden md:flex items-center w-full max-w-xl mx-4 rounded-md overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-indigo-500">
-      <input type="text" name="q" placeholder="Rechercher un produit..." class="w-full px-4 py-2 bg-white dark:bg-gray-800 border-none text-sm text-gray-800 dark:text-white focus:outline-none placeholder-gray-400" required>
-      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 flex items-center justify-center transition duration-200" aria-label="Rechercher">
+    <form action="{{ route('search') }}" method="GET"
+          class="hidden md:flex items-center w-full max-w-xl mx-4 rounded-md overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-indigo-500">
+      <input type="text" name="q" placeholder="Rechercher un produit..." required
+             class="w-full px-4 py-2 bg-white dark:bg-gray-800 border-none text-sm text-gray-800 dark:text-white focus:outline-none placeholder-gray-400" />
+      <button type="submit" aria-label="Rechercher"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 flex items-center justify-center transition duration-200">
         <i class="fas fa-search"></i>
       </button>
     </form>
 
     <!-- Actions utilisateur -->
     <div class="flex items-center space-x-5 text-gray-700 dark:text-gray-200">
+
       <!-- Panier -->
-      <a href="{{ route('cart.index') }}" class="relative hover:text-yellow-500 transition-colors duration-200">
+      <a href="{{ route('cart.index') }}" class="relative hover:text-yellow-500 transition-colors duration-200" title="Panier">
         <i class="fas fa-shopping-cart text-xl"></i>
         @if(session('cart') && count(session('cart')) > 0)
           <span class="absolute -top-2 -right-2.5 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -57,7 +65,7 @@
       </a>
 
       <!-- Notifications -->
-      <a href="{{ route('notifications.index') }}" class="relative hover:text-blue-500 transition-colors duration-200">
+      <a href="{{ route('notifications.index') }}" class="relative hover:text-blue-500 transition-colors duration-200" title="Notifications">
         <i class="fa-regular fa-bell text-xl"></i>
         @php $unread = auth()->user()?->unreadNotifications->count() ?? 0; @endphp
         @if($unread > 0)
@@ -67,19 +75,65 @@
         @endif
       </a>
 
+      <!-- Wishlist -->
+      <a href="{{ route('wishlist.index') }}" class="relative hover:text-pink-500 transition-colors duration-200" title="Wishlist">
+        <i class="fas fa-heart text-xl"></i>
+        @php
+          $wishlistCount = auth()->check() ? auth()->user()->wishlistItems()->count() : 0;
+        @endphp
+        @if($wishlistCount > 0)
+          <span class="absolute -top-2 -right-2.5 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {{ $wishlistCount }}
+          </span>
+        @endif
+      </a>
+
+      <!-- Points de fidélité -->
+      <a href="{{ route('points.index') }}" class="relative hover:text-green-500 transition-colors duration-200" title="Mes points de fidélité">
+        <i class="fas fa-coins text-xl"></i>
+        @php
+          $points = auth()->user()?->points->sum('points') ?? 0;
+        @endphp
+        @if($points > 0)
+          <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+            {{ $points }}
+          </span>
+        @endif
+      </a>
+
+      <!-- Support Tickets -->
+      <a href="{{ route('support_tickets.index') }}"
+         class="inline-flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
+         title="Support Tickets">
+        <i class="fas fa-headset"></i>
+        <span class="hidden sm:inline">Support</span>
+      </a>
+
+      <!-- Demandes de retour -->
+      <a href="{{ route('return_requests.index') }}"
+         class="inline-flex items-center space-x-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200"
+         title="Mes demandes de retour">
+        <i class="fas fa-undo text-lg"></i>
+        <span class="hidden sm:inline font-medium">Retours</span>
+      </a>
+
       <!-- Profil Dropdown -->
       @auth
         <div x-data="{ open: false }" class="relative">
-          <button @click="open = !open" class="hover:text-pink-500 transition-colors duration-200">
+          <button @click="open = !open" class="hover:text-pink-500 transition-colors duration-200" aria-label="Menu utilisateur">
             <i class="fa-regular fa-user text-xl"></i>
           </button>
-          <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200"
-               x-transition:enter-start="opacity-0 scale-95"
-               x-transition:enter-end="opacity-100 scale-100"
-               x-transition:leave="transition ease-in duration-100"
-               x-transition:leave-start="opacity-100 scale-100"
-               x-transition:leave-end="opacity-0 scale-95"
-               class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-lg z-50 text-sm text-gray-800 dark:text-gray-200">
+          <div
+            x-show="open"
+            @click.away="open = false"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-lg z-50 text-sm text-gray-800 dark:text-gray-200"
+          >
             <ul class="py-2">
               <li><a href="{{ url('/dashboard') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Tableau de bord</a></li>
               <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Commandes</a></li>
@@ -97,18 +151,13 @@
           </div>
         </div>
       @else
-        <a href="{{ route('login') }}" class="hover:text-pink-500 transition-colors duration-200">
+        <a href="{{ route('login') }}" class="hover:text-pink-500 transition-colors duration-200" title="Se connecter">
           <i class="fa-regular fa-user text-xl"></i>
         </a>
       @endauth
     </div>
   </div>
 </header>
-
-
-
-
-
 
 
     <!-- Page Content -->

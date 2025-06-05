@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Category;
+use App\Models\Brand;
 use Illuminate\Support\Facades\Storage;
+
 
 class ProductController extends Controller
 {
@@ -20,36 +23,44 @@ class ProductController extends Controller
 
     // Formulaire de création
     public function create()
-    {
-        return view('admin.products.create');
-    }
+{
+    $categories = Category::all();
+    $brands = Brand::all();
+
+    return view('admin.products.create', compact('categories', 'brands'));
+}
+
 
     // Enregistrer un produit
-    public function store(Request $request)
+
+
+
+
+public function store(Request $request)
 {
     $validated = $request->validate([
-        'name'        => 'required|string|max:255',
-        'description' => 'required|string',
-        'price'       => 'required|numeric|min:0',
-        'stock'       => 'required|integer|min:0',
-        'image'       => 'nullable|image',
-        'images.*'    => 'nullable|image', // images supplémentaires
-        'category'    => 'nullable|string|max:255',
-        'brand'       => 'nullable|string|max:255',
+        'name'         => 'required|string|max:255',
+        'description'  => 'required|string',
+        'price'        => 'required|numeric|min:0',
+        'stock'        => 'required|integer|min:0',
+        'image'        => 'nullable|image|max:2048',
+        'images.*'     => 'nullable|image|max:2048',
+        'category_id'  => 'required|exists:categories,id',
+        'brand_id'     => 'required|exists:brands,id',
+        'type'         => ['required', Rule::in(['clavier', 'souris', 'écran'])],
     ]);
 
-    // Ajout éventuel d'un user_id si tu veux lier au user connecté
-    $validated['user_id'] = auth()->id(); // (optionnel, si le produit appartient à un utilisateur)
+    $validated['user_id'] = auth()->id();
 
-    // Image principale
+    // Gérer l'image principale
     if ($request->hasFile('image')) {
         $validated['image'] = $request->file('image')->store('products', 'public');
     }
 
-    // Création du produit
+    // Créer le produit
     $product = Product::create($validated);
 
-    // Images supplémentaires
+    // Gérer les images supplémentaires
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $img) {
             $path = $img->store('products', 'public');
@@ -63,6 +74,8 @@ class ProductController extends Controller
     return redirect()->route('admin.products.index')
                      ->with('success', 'Produit ajouté avec succès.');
 }
+
+
 
 
     // Afficher un produit côté boutique
@@ -80,45 +93,50 @@ class ProductController extends Controller
     }
 
     // Mettre à jour un produit
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',
-            'category'    => 'nullable|string|max:255',
-            'brand'       => 'nullable|string|max:255',
-            'image'       => 'nullable|image',
-            'images.*'    => 'nullable|image',
-            'description' => 'nullable|string',
-        ]);
 
-        $product = Product::findOrFail($id);
-        $data = $request->except('images');
 
-        // Nouvelle image principale ?
-        if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $data['image'] = $request->file('image')->store('products', 'public');
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'name'        => 'required|string|max:255',
+        'price'       => 'required|numeric|min:0',
+        'stock'       => 'required|integer|min:0',
+        'category'    => 'nullable|string|max:255',
+        'brand'       => 'nullable|string|max:255',
+        'image'       => 'nullable|image|max:2048',
+        'images.*'    => 'nullable|image|max:2048',
+        'description' => 'nullable|string',
+        'type'        => ['required', Rule::in(['clavier', 'souris', 'écran'])],  // validation type
+    ]);
+
+    $product = Product::findOrFail($id);
+
+    // Gestion nouvelle image principale
+    if ($request->hasFile('image')) {
+        // Supprimer ancienne image si existe
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
         }
-
-        $product->update($data);
-
-        // Nouvelles images supplémentaires
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $img) {
-                $path = $img->store('products', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'path' => $path,
-                ]);
-            }
-        }
-
-        return redirect()->route('admin.products.index')->with('success', 'Produit mis à jour avec succès.');
+        $validated['image'] = $request->file('image')->store('products', 'public');
     }
+
+    // Mettre à jour le produit avec les données validées
+    $product->update($validated);
+
+    // Gestion images supplémentaires
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $img) {
+            $path = $img->store('products', 'public');
+            ProductImage::create([
+                'product_id' => $product->id,
+                'path'       => $path,
+            ]);
+        }
+    }
+
+    return redirect()->route('admin.products.index')->with('success', 'Produit mis à jour avec succès.');
+}
+
 
     // Supprimer un produit
     public function destroy($id)

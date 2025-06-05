@@ -53,20 +53,59 @@
                        required>
             </div>
 
+            <!-- Type -->
+            <div>
+                <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+                <select name="type" id="type"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                        required>
+                    <option value="">-- Choisir un type --</option>
+                    <option value="clavier">Clavier</option>
+                    <option value="souris">Souris</option>
+                    <option value="écran">Écran</option>
+                </select>
+            </div>
+
+            <!-- Catégorie -->
+            <div>
+                <label for="category_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catégorie</label>
+                <select name="category_id" id="category_id"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                        required>
+                    <option value="">-- Choisir une catégorie --</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Marque -->
+            <div>
+                <label for="brand_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marque</label>
+                <select name="brand_id" id="brand_id"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                        required>
+                    <option value="">-- Choisir une marque --</option>
+                    @foreach ($brands as $brand)
+                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Image principale -->
             <div>
                 <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image principale</label>
                 <input type="file" name="image" id="image"
-                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 focus:outline-none transition duration-150"
-                       accept="image/*" required>
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 focus:outline-none transition duration-150"
+                    accept="image/*" required>
             </div>
 
             <!-- Images supplémentaires -->
             <div>
                 <label for="images" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Images supplémentaires</label>
                 <input type="file" name="images[]" id="images"
-                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-500 file:text-white hover:file:bg-indigo-600 focus:outline-none transition duration-150"
-                       accept="image/*" multiple>
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-500 file:text-white hover:file:bg-indigo-600 focus:outline-none transition duration-150"
+                    accept="image/*" multiple>
             </div>
 
             <!-- Bouton Soumettre -->

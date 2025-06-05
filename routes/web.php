@@ -1,5 +1,7 @@
 <?php
-
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\PageDefaultController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -38,7 +40,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
 Route::middleware(['web', 'auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        return view('dashboard');
     });
 });
 
@@ -121,6 +123,8 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 Route::get('/checkout/thankyou', [CheckoutController::class, 'thankyou'])->name('orders.thankyou');
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DashboardClientController;
+
 
 
 Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
@@ -132,3 +136,97 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+
+// Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+//     Route::resource('stock', StockController::class);
+//     Route::get('admin/stock/sync', [StockController::class, 'syncStocks'])->name('stock.sync');
+// });
+// Route::get('/admin/stock/sync', [StockController::class, 'syncStocks']);
+
+
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('stock/sync', [StockController::class, 'syncStocks'])->name('stock.sync');
+    Route::resource('stock', StockController::class);
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+});
+
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Routes accessibles seulement aux utilisateurs connectés ET email vérifié
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+
+// Routes d'authentification Breeze (par défaut)
+require __DIR__.'/auth.php';
+Route::get('/dashboard', [DashboardClientController::class, 'index'])->name('dashboard')->middleware('auth');
+use App\Http\Controllers\WishlistController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+});
+Route::post('/wishlist/add/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
+use App\Http\Controllers\PointController;
+use App\Http\Controllers\SupportTicketController;
+
+Route::middleware(['auth'])->group(function() {
+    Route::get('/points', [PointController::class, 'index'])->name('points.index');
+    // Route pour ajouter des points (à protéger ou limiter à admin)
+    Route::post('/points/add', [PointController::class, 'addPoints'])->name('points.add');
+});
+Route::middleware('auth')->group(function () {
+    Route::resource('support_tickets', SupportTicketController::class);
+});
+use App\Http\Controllers\ReturnRequestController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('return_requests', ReturnRequestController::class)->only(['index', 'create', 'store']);
+});
+
+
+
+// Groupe Admin : toutes les routes protégées par 'auth' et 'isadmin'
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/create', [AdminOrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [AdminOrderController::class, 'store'])->name('orders.store');
+
+    Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/orders/{id}/invoice', [AdminOrderController::class, 'invoice'])->name('orders.invoice');
+    Route::get('/orders/statistics', [AdminOrderController::class, 'statistics'])->name('orders.statistics');
+});
+Route::middleware(['auth'])->group(function () {
+    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+});
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+// Formulaire d'avis (page dédiée)
+Route::get('/products/{product}/review', [ReviewController::class, 'create'])->name('reviews.create');
+
+// Enregistrement de l'avis
+Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('reviews.store');
+
+
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/reviews/{review}', [AdminReviewController::class, 'show'])->name('reviews.show'); // ✅ Ajoute ceci
+    Route::post('/reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+use App\Http\Controllers\Admin\UserExportController;
+
+Route::get('admin/users/export/{format}', [UserExportController::class, 'export'])->name('admin.users.export');
+
