@@ -29,10 +29,15 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+</head>
 <header class="bg-white dark:bg-gray-900 shadow-md fixed w-full z-50 transition duration-300">
+
+
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
     <!-- Logo -->
@@ -277,8 +282,8 @@
     </div>
 
     <div class="mt-10 pt-6 border-t border-gray-300 dark:border-gray-700 text-center text-xs text-gray-500">
-      <p>© 2025 MaxGaming - Tous droits réservés.</p>
-      <p>Réalisé par <a href="#" class="text-indigo-600 hover:underline">Naykomedia</a></p>
+      <p>© 2025 EveresTech - Tous droits réservés.</p>
+      <p>Réalisé par <a href="#" class="text-indigo-600 hover:underline">IRISI GROUP</a></p>
     </div>
   </div>
 </footer>
@@ -290,5 +295,6 @@
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/star-rating.js/dist/star-rating.min.js"></script>
+@yield('scripts')
 </body>
 </html>

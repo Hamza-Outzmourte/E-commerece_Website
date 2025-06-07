@@ -80,17 +80,23 @@
             </div>
 
             <!-- Marque -->
-            <div>
-                <label for="brand_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marque</label>
-                <select name="brand_id" id="brand_id"
-                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                        required>
-                    <option value="">-- Choisir une marque --</option>
-                    @foreach ($brands as $brand)
-                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+            <div class="mb-4">
+  <label for="brand_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    Marque
+  </label>
+  <select
+    name="brand_id"
+    id="brand_id"
+    required
+    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+  >
+    <option value="">-- Choisir une marque --</option>
+    @foreach ($brands as $brand)
+      <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+    @endforeach
+  </select>
+</div>
+
 
             <!-- Image principale -->
             <div>

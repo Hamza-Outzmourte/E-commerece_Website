@@ -80,10 +80,12 @@ public function store(Request $request)
 
     // Afficher un produit côté boutique
     public function show($id)
-    {
-        $product = Product::with('images', 'reviews.user')->findOrFail($id);
-        return view('shop.show', compact('product'));
-    }
+{
+    $product = Product::with(['brand', 'category', 'images', 'reviews.user'])->findOrFail($id);
+
+    return view('shop.show', compact('product'));
+}
+
 
     // Formulaire d'édition
     public function edit($id)

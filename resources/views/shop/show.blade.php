@@ -69,11 +69,32 @@
   <strong>Catégorie :</strong>
   {{ $product->category ? ucfirst($product->category->name) : 'Non défini' }}
 </p>
-        <p class="text-gray-600 mb-2"><strong>Marque :</strong> {{ $product->brand ?? 'Non définie' }}</p>
+        <p class="text-gray-600 mb-2">
+  <strong>Marque :</strong> {{ $product->brand ? ucfirst($product->brand->name) : 'Non définie' }}
+
+
+</p>
+
+
         <p class="text-3xl text-green-600 font-extrabold mb-4">{{ number_format($product->price, 2) }} Dh</p>
 
         <div class="text-sm text-gray-500 space-y-1">
-          <p><strong>Stock :</strong> {{ $product->stock ?? 'Non spécifié' }}</p>
+         <p><strong>Stock :</strong>
+  @if (is_null($product->stock))
+    <span class="inline-block ml-2 px-3 py-1 text-sm font-semibold rounded-full bg-gray-300 text-gray-800">
+      Non spécifié
+    </span>
+  @elseif ($product->stock > 0)
+    <span class="inline-block ml-2 px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+      En stock
+    </span>
+  @else
+    <span class="inline-block ml-2 px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+      Rupture de stock
+    </span>
+  @endif
+</p>
+
           <p><strong>Référence :</strong> {{ $product->reference ?? 'N/A' }}</p>
         </div>
       </div>

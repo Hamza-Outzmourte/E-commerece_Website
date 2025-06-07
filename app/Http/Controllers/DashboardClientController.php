@@ -35,7 +35,7 @@ class DashboardClientController extends Controller
         $allNotifications = $user->notifications()->latest()->take(10)->get();
 
         // 3. Produits recommandés (exemple simple : derniers produits gaming)
-        $recommendedProducts = Product::where('category', 'gaming')->latest()->take(5)->get();
+        $recommendedProducts = Product::where('category_id', 'gaming')->latest()->take(5)->get();
 
         // 4. Statistiques perso
         $totalSpent = Order::where('user_id', $user->id)->sum('total'); // 'total' dans la table orders
